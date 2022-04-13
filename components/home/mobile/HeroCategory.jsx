@@ -23,7 +23,7 @@ export default function HeroCategory() {
               <i className="fa-light fa-person-dress"></i>
             </div>
             <div className='text-sm text-center'>
-              Women's clothing
+              Women`&apos;s clothing
             </div>
           </div>
         </Link>
@@ -35,7 +35,7 @@ export default function HeroCategory() {
               <i className="fa-light fa-person-dress-simple"></i>
             </div>
             <div className='text-sm text-center'>
-              Men's clothing
+              Men`&apos;s clothing
             </div>
           </div>
         </Link>
@@ -95,7 +95,7 @@ export default function HeroCategory() {
               <i className="fa-light fa-person-dress"></i>
             </div>
             <div className='text-sm text-center'>
-              Women's clothing
+              Women`&apos;s clothing
             </div>
           </div>
         </Link>
@@ -107,7 +107,7 @@ export default function HeroCategory() {
               <i className="fa-light fa-person-dress-simple"></i>
             </div>
             <div className='text-sm text-center'>
-              Men's clothing
+              Men`&apos;s clothing
             </div>
           </div>
         </Link>

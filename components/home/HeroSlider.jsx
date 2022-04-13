@@ -41,13 +41,26 @@ export default function HeroSlider(){
       <div className="w-full">
         <Slider {...settings}>
           <div>
-            <img 
-              className="rounded "
-              src='/home-slider-images/slide1.webp' 
-              width='100%'
-            />
+           <div className="h-[320px] bg-white shadow-md bg-no-repeat bg-cover rounded-md" style={{backgroundImage: `url('/home-slider-images/slide1.webp')`}}>
+
+           </div>
           </div>
           <div>
+           <div className="h-[320px] bg-white shadow-md bg-no-repeat bg-cover rounded-md" style={{backgroundImage: `url('/home-slider-images/slide2.webp')`}}>
+
+           </div>
+          </div>
+          <div>
+           <div className="h-[320px] bg-white shadow-md bg-no-repeat bg-cover rounded-md" style={{backgroundImage: `url('/home-slider-images/slide3.webp')`}}>
+
+           </div>
+          </div>
+          <div>
+           <div className="h-[320px] bg-white shadow-md bg-no-repeat bg-cover rounded-md" style={{backgroundImage: `url('/home-slider-images/slide4.webp')`}}>
+
+           </div>
+          </div>
+          {/* <div>
             <img 
               className="rounded "
               src='/home-slider-images/slide2.webp' 
@@ -67,7 +80,7 @@ export default function HeroSlider(){
               src='/home-slider-images/slide4.webp' 
               width='100%'
             />
-          </div>
+          </div> */}
           
         </Slider>
       </div>
