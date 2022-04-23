@@ -10,8 +10,8 @@ export default function Dropdown({data}) {
       </span>
       <div className={`transition-all duration-500 relative hidden group-hover:block`}>
         <div className='absolute right-0 top-0 bg-white shadow-lg p-4 whitespace-nowrap'>
-          {options.map(option => {
-            return option?.title
+          {options.map((option, index) => {
+            return <div key={index}>{option?.title}</div>
           })}
         </div>
       </div>

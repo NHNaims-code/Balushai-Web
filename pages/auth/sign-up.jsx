@@ -1,4 +1,5 @@
 import React from 'react'
+import RegisterForm from '../../components/auth/sign-up/RegisterForm'
 
 export default function signUp() {
   return (
@@ -8,13 +9,7 @@ export default function signUp() {
           <div>
             <h4 className='text-center text-xl font-semibold mb-4'>Register</h4>
           </div>
-          <form className='flex flex-col'>
-            <input type='text' placeholder='Name' className='border p-4 rounded-lg my-2 focus:border-[#D23E41]'/>
-            <input type='text' placeholder='Email' className='border p-4 rounded-lg my-2'/>
-            <input type='text' placeholder='Password' className='border p-4 rounded-lg my-2'/>
-            <input type='text' placeholder='Confirm Password' className='border p-4 rounded-lg my-2'/>
-            <button className='bg-[#D23E41] text-white p-4 rounded-full my-2'>Sign In</button>
-          </form>
+          <RegisterForm/>
           <div className='flex justify-between items-center my-4'>
             <span className='bg-gray-300 grow h-[1px]'></span>
             <p className='mx-2'>Or continue with</p>
@@ -34,4 +29,8 @@ export default function signUp() {
       </div>
     </div>
   )
+}
+
+function getStaticProps(){
+  
 }

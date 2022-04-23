@@ -8,7 +8,6 @@ export default function HeroSlider(){
 
 
     const PrevArrowButton = (props) => {
-      console.log(props)
       const {className, onClick} = props
       return(<div 
         className={className} 
