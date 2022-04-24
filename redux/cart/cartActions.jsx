@@ -37,7 +37,6 @@ export const updateCart =(data) => {
 }
 
 export const incQuantity = (cart, item, dispatch) => {
-console.log("items: ",)
   const incData = cart?.items?.map(product => {
     if(product?.slug == item?.slug){
       return{...product, quantity: parseInt(product.quantity)+1}

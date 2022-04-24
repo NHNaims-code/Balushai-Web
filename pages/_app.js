@@ -2,10 +2,13 @@ import Head from 'next/head'
 import { Provider } from 'react-redux'
 import StartingComponent from '../components/StartingComponent'
 import Toast from '../components/toast/Toast'
+import axios from 'axios'
+import { customer } from '../constants'
 import Footer from '../layout/footer/Footer'
 import Header from '../layout/header/Header'
 import store from '../redux/store'
 import '../styles/globals.css'
+axios.defaults.headers.common['Authorization'] = customer || ""
 
 function MyApp({ Component, pageProps }) {
 

@@ -12,11 +12,7 @@ export function getSingleAddress(id) {
     return Get(`customer/address/${id}`);
 }
 
-export function getSingleAddress() {
-    return Get(`customer/address/${id}`);
-}
-
 export function updateAddress(id, data) {
-    return Post(`customer/address/${id}`, data);
+    return Update(`customer/address/${id}`, data);
 }
 

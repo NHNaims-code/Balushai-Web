@@ -13,21 +13,20 @@ export default function HeroSection({data}) {
   const [quantity, setQuentity] = useState(1)
 
   useEffect(() => {
-    console.log('hitttttttttttt')
     if(cart?.items?.length == 0){
       setOnCart(false)
     }
     cart?.items?.map(item => {
-      console.log("first: ", item)
-      if(item.product_id == data._id || item.product_id == data._id ){
+      console.log("hit", cart?.items)
+      if(item.product_id._id == data._id){
         setOnCart(item)
         setQuentity(item.quantity)
         console.log("product on cart exist")
       }else{
-        console.log("not found")
         setOnCart(false)
       }
     })
+    console.log("cart from hero: ", cart)
   }, [cart])
 
 
@@ -42,9 +41,11 @@ export default function HeroSection({data}) {
       offer_price: currentSize.pricing?.offer_price,
       quantity: quantity
     }
-    addToCart(cartItem).then(response => {
+    addToCart(cartItem).then( async response => {
       if(response?.data){
-        dispatch(updateCart(response?.data))
+        const cartResponse = await getCustomerCart()
+        dispatch(updateCart(cartResponse?.data))
+        console.log("success")
       }
     })
   }
@@ -148,12 +149,11 @@ export default function HeroSection({data}) {
                 <div className='mb-3'>Quantity: </div>
                 <div className='flex items-center'>
                  {
-                   onCart 
-                   && <div className='mr-4'>
-                    <i onClick={()=>decQuantity(cart, onCart, dispatch)} className="fa-light fa-circle-minus text-2xl hover:cursor-pointer"></i>
+                  <div className='mr-4'>
+                    {quantity > 1 && <i onClick={()=>decQuantity(cart, onCart, dispatch)} className="fa-light fa-circle-minus text-2xl hover:cursor-pointer"></i>}
                     <span className='text-2xl mx-2'>{quantity}</span>
-                    <i onClick={()=>incQuantity(cart, onCart, dispatch)} className="fa-light fa-circle-plus text-2xl hover:cursor-pointer"></i>
-                   </div>
+                    {(quantity < 5 || quantity < parseInt(currentSize.quantity)) && <i onClick={()=>incQuantity(cart, onCart, dispatch)} className="fa-light fa-circle-plus text-2xl hover:cursor-pointer"></i>}
+                  </div>
                  }
                   <span>In Stock: {currentSize.quantity}</span>
                 </div>
@@ -164,7 +164,7 @@ export default function HeroSection({data}) {
                   <button onClick={() => dispatch(addToCart({...data, quantity}))} className='hover:shadow-md text-white px-16 bg-gradient-to-r from-violet-500 to-fuchsia-500 mr-4 p-4 font-semibold rounded-md'>Buy Now</button>
                   { !onCart
                     ?<button onClick={handleAddToCart} className='hover:shadow-md text-white px-16 bg-gradient-to-r from-sky-500 to-indigo-500 mr-4 p-4 font-semibold rounded-md focus:shadow-md transition-all duration-200'>Add to Cart</button>
-                    :<button onClick={() => removeItem(cart, onCart, dispatch)} className='hover:shadow-md text-white px-16 bg-gradient-to-r from-sky-500 to-indigo-500 mr-4 p-4 font-semibold rounded-md focus:shadow-md transition-all duration-200'>Remove</button>
+                    :<button onClick={() => {removeItem(cart, onCart, dispatch); setQuentity(1)}} className='hover:shadow-md text-white px-16 bg-gradient-to-r from-sky-500 to-indigo-500 mr-4 p-4 font-semibold rounded-md focus:shadow-md transition-all duration-200'>Remove</button>
                   }
                   <button className='border p-4 rounded-md'>
                     <i className="fa-light fa-heart mr-1"></i>
