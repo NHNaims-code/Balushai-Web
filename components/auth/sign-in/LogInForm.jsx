@@ -8,6 +8,7 @@ import { getUserData } from '../../../adapters/user'
 import { Authorization } from '../../../constants'
 import { useRouter } from 'next/router'
 import { updateCart } from '../../../redux/cart/cartActions'
+import Link from 'next/link'
 
 export default function LogInForm() {
   const [loginData, setLoginData] = useState({})
@@ -17,6 +18,8 @@ export default function LogInForm() {
 
   const dispatch = useDispatch()
   const router = useRouter()
+
+  console.log(router)
 
   const handleChange = (event) => {
     const newData = loginData
@@ -52,11 +55,11 @@ export default function LogInForm() {
   return (
     <form onSubmit={handleSubmit} className='flex flex-col'>
       <div>
-        <div className={`${errMsg? 'block' : 'hidden'} flex justify-between bg-red-100 py-4 border-l-8 border-red-400 px-4 rounded-md text-red-600 transition-all duration-300 shadow mb-2`}>
-          <span>{errMsg}</span>
-          <span onClick={() => setErrMsg(null)} className='hover:cursor-pointer hover:rotate-180 transition-all duration-200'>
-            <i className="fa-solid fa-xmark ml-2"></i>
-          </span>
+        <div className={`${errMsg? 'block' : 'hidden'} flex justify-between items-start bg-red-100 py-4 border-l-8 border-red-400 px-4 rounded-md text-red-600 transition-all duration-300 shadow mb-2`}>
+          <span>{errMsg} <Link href='/auth/sign-up' ><span className='ml-2 hover:cursor-pointer text-green-400 font-semibold underline'>Sign Up</span></Link></span>
+          <div onClick={() => setErrMsg(null)} className=' ml-2 hover:cursor-pointer hover:rotate-180 transition-all duration-300'>
+            <i className="fa-solid fa-xmark"></i>
+          </div>
         </div>
       </div>
       <input onChange={handleChange} name='email' type='text' placeholder='Email' className='border p-4 rounded-lg my-2' required/>

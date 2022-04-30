@@ -10,6 +10,7 @@
     "export": "npm run build && next export -o _static"
   },
   "dependencies": {
+    "@bangladeshi/bangladesh-address": "^1.0.4",
     "axios": "^0.26.1",
     "html-react-parser": "^1.4.11",
     "js-cookie": "^3.0.1",

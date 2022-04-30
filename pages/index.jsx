@@ -1,19 +1,20 @@
 import Head from 'next/head'
 import HeroSection from '../components/home/HeroSection'
-import Banner from '../components/home/mobile/Banner'
-import HeroCategory from '../components/home/mobile/HeroCategory'
+import MobileBanner from '../components/home/mobile/MobileBanner'
+import MobileHeroCategory from '../components/home/mobile/MobileHeroCategory'
 import ProductCard from '../components/home/ProductCard'
 import ProductSection from '../components/home/ProductSection'
 import SuperDealsSection from '../components/home/SuperDealsSection'
 import Footer from '../layout/footer/Footer'
 import Header from '../layout/header/Header'
 import MobileFooter from '../layout/mobile/footer/MobileFooter'
-import MobileHeader from '../layout/mobile/header/MobileHeader'
 import Link from 'next/link'
 import { AllProducts } from '../adapters/product'
 import { setUserData } from '../redux'
 import { useDispatch } from 'react-redux'
 import { getUserData } from '../adapters/user'
+import MobileProductSection from '../components/home/mobile/MobileProductSection'
+import MobileHeroSlider from '../components/home/mobile/MobileHeroSlider'
 
 export default function Home({products}) {
   console.log(products)
@@ -28,13 +29,17 @@ export default function Home({products}) {
       <div className='hidden sm:block'>
         <HeroSection/>
         {/* <SuperDealsSection/> */}
-        <ProductSection productList={products}/>
+        <ProductSection products={products}/>
       </div>
+
+      {/* only visible on mobile device */}
       <div className='sm:hidden'>
-        <MobileHeader/>
-        <HeroCategory/>
-        <Banner/>
-        <MobileFooter/>
+        <div className='mb-8'>
+          <MobileHeroSlider/>
+          <MobileHeroCategory/>
+          <MobileBanner/>
+          <MobileProductSection products={products}/>
+        </div>
       </div>
 
       
@@ -42,7 +47,7 @@ export default function Home({products}) {
   )
 }
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const response = await AllProducts()
   // const userInfo = await getUserData()
   // console.log("userInfo: ", userInfo)
@@ -50,7 +55,7 @@ export async function getStaticProps(context) {
     props: {
       products: response.data
     }, // will be passed to the page component as props
-    revalidate: 10,
+    // revalidate: 10,
   }
 }
 

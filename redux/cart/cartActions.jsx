@@ -66,6 +66,38 @@ export const decQuantity = (cart, item, dispatch) => {
   })
 }
 
+export const updateCartItemQuantity = (cart, item, qty, dispatch) => {
+  const decData = cart?.items?.map(product => {
+    if(product?.slug == item?.slug){
+      return{...product, quantity: parseInt(qty)}
+    }else{
+      return product
+    }
+  })
+
+  updateCartOnDB(cart?._id, {...cart, items: decData})
+  .then(response => {
+    dispatch(updateCart(response.data))
+  })
+}
+
+export const updateCartItem = (cart, item, qty, dispatch) => {
+  const decData = cart?.items?.map(product => {
+    if(product?.slug == item?.slug){
+      return{...product, quantity: parseInt(qty)}
+    }else{
+      return product
+    }
+  })
+
+  updateCartOnDB(cart?._id, {...cart, items: decData})
+  .then(response => {
+    dispatch(updateCart(response.data))
+  })
+}
+
+
+
 export const removeItem = (cart, item, dispatch) => {
   const rmData = cart?.items?.filter(product => product?.slug != item?.slug)
 

@@ -4,10 +4,12 @@ const headerOptions = {
     "Content-Type": "application/json",
   },
   customer = Cookies.get("token"),
-  baseUrl = "http://localhost:7890"
+  baseUrl = "http://localhost:7890",
+  prevPath = '/'
   
 export {
   headerOptions,
   baseUrl,
-  customer
+  customer,
+  prevPath
 };

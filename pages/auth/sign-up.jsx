@@ -3,9 +3,9 @@ import RegisterForm from '../../components/auth/sign-up/RegisterForm'
 
 export default function signUp() {
   return (
-    <div className='container mx-auto p-8'>
+    <div className='container mx-auto p-8 mt-[52px] sm:mt-0'>
       <div className='flex justify-center items-center'>
-        <div className='bg-white p-4 shadow-lg xl:min-w-[360px]'>
+        <div className='bg-white p-4 shadow-lg w-full sm:w-[360px]'>
           <div>
             <h4 className='text-center text-xl font-semibold mb-4'>Register</h4>
           </div>

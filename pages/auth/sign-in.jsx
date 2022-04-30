@@ -3,9 +3,9 @@ import LogInForm from '../../components/auth/sign-in/LogInForm'
 
 export default function signIn() {
   return (
-    <div className='container mx-auto p-8'>
+    <div className='container mx-auto mt-[50px] p-8'>
       <div className='flex justify-center items-center'>
-        <div className='bg-white p-4 shadow-lg xl:min-w-[360px]'>
+        <div className='bg-white p-4 shadow-lg w-full sm:w-[360px]'>
           <div>
             <h4 className='text-center text-xl font-semibold mb-4'>Log In</h4>
           </div>
@@ -25,6 +25,9 @@ export default function signIn() {
               <span className='ml-4'>Login with Google</span>
             </div>
           </div>
+          {/* <div className='text-gray-500 mt-2 '>
+            Create an account
+          </div> */}
         </div>
       </div>
     </div>

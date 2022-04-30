@@ -2,7 +2,7 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import InputField from '../components/common/InputField'
 
-export default function profile() {
+export default function Profile() {
   const [addressData, setAddressData] = useState({})
 
   const handleChange = (e) => {
@@ -41,7 +41,7 @@ export default function profile() {
           <label htmlFor='profileImage' className='w-48 h-48 overflow-hidden flex justify-center items-center bg-cover bg-center bg-no-repeat hover:cursor-pointer rounded-full border'
             style={{backgroundImage: `url('/images/default-user.png')`}}
           />
-          <input type='file' id='profileImage' className='hidden'/>
+          <input type='file' id='profileImage' className='hidden' accept="image/png, image/gif, image/jpeg, image/webp"/>
           <h4 className='text-xl text-center mt-8'>Profile Photo</h4>
         </div>
       </div>

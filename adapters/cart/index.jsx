@@ -9,13 +9,15 @@ export function addToCart(data) {
 }
 
 export function updateCartOnDB(id, data) {
-
-    console.log("cart adaptar: ", data)
     return Update(`customer/update-cart/${id}`, data);
 }
 
 export function deleteCart(id){
     return Delete(`customer/delete-cart/${id}`)
+}
+
+export function updateCartItem(item){
+    return Update(`customer/update-cart-item/`, item)
 }
 
 export function deleteCartItem(item) {

@@ -8,7 +8,7 @@ import Reviews from '../../components/product/Reviews'
 export default function productDetail({product}) {
  
   return (
-    <div>
+    <div className='mt-[48px]'>
      {
        product
        && <>
@@ -43,7 +43,7 @@ export async function getStaticProps(context) {
   const { params } = context
   console.log("params: ", params)
   const response = await SingleProduct(`product/${params.slug}`)
-  
+  console.log("product data: ",response.data)
     return {
       props: {
         product: response.data

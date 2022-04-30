@@ -12,7 +12,7 @@ export default function HeroRightSection() {
       </div>
      {
        userData?.name
-       ? <h4 className='text-center bg-[#D23E4130] shadow-sm py-2 text-xl mt-2'>{userData?.name}</h4>
+       ? <h4 className='text-center border-y-1 shadow-sm py-2 text-xl mt-2'>{userData?.name}</h4>
        : <div className='p-4 flex justify-around'>
             <Link passHref  href='/auth/sign-up'>
               <button className='bg-[#D23E41] text-white h-12 w-24 rounded-2xl'>Join</button>

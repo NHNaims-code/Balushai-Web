@@ -46,11 +46,11 @@ export default function RegisterForm() {
   return (
     <form onSubmit={handleSubmit} className='flex flex-col'>
       <div>
-        <div className={`${errMsg? 'block' : 'hidden'} flex justify-between bg-red-100 py-4 border-l-8 border-red-400 px-4 rounded-md text-red-600 transition-all duration-300 shadow mb-2`}>
+        <div className={`${errMsg? 'block' : 'hidden'} flex justify-between items-start bg-red-100 py-4 border-l-8 border-red-400 px-4 rounded-md text-red-600 transition-all duration-300 shadow mb-2`}>
           <span>{errMsg}</span>
-          <span onClick={() => setErrMsg(null)} className='hover:cursor-pointer'>
-            <i className="fa-solid fa-xmark ml-2 hover:rotate-180 transition-all duration-200 bg-blue"></i>
-          </span>
+          <div onClick={() => setErrMsg(null)} className=' ml-2 hover:cursor-pointer hover:rotate-180 transition-all duration-300'>
+            <i className="fa-solid fa-xmark"></i>
+          </div>
         </div>
       </div>
       <div>

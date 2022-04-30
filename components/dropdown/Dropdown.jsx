@@ -9,7 +9,7 @@ export default function Dropdown({data}) {
         {title}<i className={`ml-4 fa-light fa-chevron-right transition-all duration-300 rotate-90 group-hover:-rotate-90`}></i>
       </span>
       <div className={`transition-all duration-500 relative hidden group-hover:block`}>
-        <div className='absolute right-0 top-0 bg-white shadow-lg p-4 whitespace-nowrap'>
+        <div className='absolute right-0 top-0 bg-white shadow-lg p-4 whitespace-nowrap z-50'>
           {options.map((option, index) => {
             return <div key={index}>{option?.title}</div>
           })}

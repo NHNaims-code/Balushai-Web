@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 export default function ProductCard({data}) {
+  console.log("from product card: ", data)
   return (
     <Link passHref  href={`/product/${data?.slug}`}>
       <div className='transition-all duration-150 cursor-pointer rounded-md overflow-hidden shadow-md hover:shadow-lg'>
@@ -13,7 +14,7 @@ export default function ProductCard({data}) {
               width="100%" 
               height="100%" 
               layout="responsive" 
-              objectFit="cover"
+              objectFit="contain"
               />
           </div>
           <div className='p-2'>
@@ -23,13 +24,13 @@ export default function ProductCard({data}) {
               <span className='text-sm ml-1'>
                 ৳
                 <span className='text-xl font-semibold'>
-                {data?.variant_stock_price[0]?.sizes[0]?.pricing?.special_price}
+                {parseInt(data?.variant_stock_price[0]?.sizes[0]?.pricing?.special_price).toLocaleString()}
                 </span>
               </span>
               <span className='ml-2'>
                 ৳
                 <span className='line-through'>
-                {data?.variant_stock_price[0]?.sizes[0]?.pricing?.price}
+                {parseInt(data?.variant_stock_price[0]?.sizes[0]?.pricing?.price).toLocaleString()}
                 </span>
               </span>
             </div>

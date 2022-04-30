@@ -1,26 +1,47 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { createAddress, updateAddress } from '../adapters/address'
+import { createOrder } from '../adapters/order'
 import InputField from '../components/common/InputField'
 import SelectOption from '../components/common/SelectOption'
+import { updateCart } from '../redux/cart/cartActions'
 
-export default function checkout() {
+export default function Checkout() {
+  const router = useRouter()
+  const dispatch = useDispatch()
+
   const BILLING_ADDRESS = 'BILLING_ADDRESS'
   const SHIPPING_ADDRESS = 'SHIPPING_ADDRESS'
   const PAYMENT_INFO = 'PAYMENT_INFO'
   const cart_products = useSelector(state => state.cart?.data?.items)
-  console.log("cart Products : ", cart_products)
+  const userData = useSelector(state => state.user?.data)
   const [currentState, setCurrentState] = useState(BILLING_ADDRESS)
   const [billingAddress, setBillingAddress] = useState({})
   const [shippingAddress, setShippingAddress] = useState({})
   const [billingAddressId, setBillingAddressId] = useState(null)
   const [shippingAddressId, setShippingAddressId] = useState(null)
   const [paymentInfo, setPaymentInfo] = useState({amount: 0, method: 'COD'})
+  const [totalAmount, setTotalAmount] = useState(0)
 
   const paymentMethods = [
     {key: 'COD', value: 'COD'},
     {key: 'bKash', value: 'bKash'},
   ]
+
+  useEffect(() => {
+    if(!userData){
+      router.push("/auth/sign-in")
+    }
+  },[])
+
+  useEffect(() => {
+    let temp_amount = 0;
+    cart_products?.map(product => {
+      temp_amount += product?.special_price * product?.quantity
+    })
+    setTotalAmount(temp_amount)
+  }, [cart_products])
 
   const handleChange = (e) => {
     if(currentState === BILLING_ADDRESS){
@@ -87,83 +108,103 @@ export default function checkout() {
     }
   }
 
-  const handleOrderSubmit = (e) => {
+  const handleOrderSubmit = async(e) => {
     e.preventDefault()
+    const newCartProducts = cart_products?.map(product => {
+      return {
+        quantity: product?.quantity,
+        vendor_id: product?.vendor_id,
+        product_id: product?.product_id?._id,
+        price: product?.special_price,
+        name: product?.product_id?.product_name,
+        color: product?.color_family,
+        image: product?.image,
+        size: product?.size,
+        shipment_fee: 0 
+      }
+     })
     const order = {
-      products: cart_products,
+      products: newCartProducts,
       payment_information: paymentInfo,
-      billingAddress: billingAddressId,
-      shippingAddress: shippingAddressId
+      billing_address: billingAddressId,
+      shipping_address: shippingAddressId
     }
-    alert("Order successfull!")
+    console.log(order)
+    try {
+      const response = await createOrder(order)
+      if(response?.data){
+        dispatch(updateCart(null))
+        router.push('/order')
+      }
+    } catch (error) {
+      alert('something went worng. try again!')
+    }
     console.log("place order: ", order)
   }
 
-  return (
-    <div className='container mx-auto'>
-      <div className='mt-8 mb-12 flex justify-center'>
-        <div className='w-3/5 bg-white p-4 rounded-md shadow-sm'>
-          {
-            currentState === BILLING_ADDRESS
-            &&
-            <div>
-            <h4 className='text-center border-b pb-2 text-xl'>
-              BILLING ADDRESS
-            </h4>
-            <form onSubmit={handleBillingAddressSubmit}>
-              <InputField value={billingAddress?.full_name} name='full_name' label="Full Name" type="text" onChange={handleChange} required={true}/>
-              <InputField value={billingAddress?.phone} name='phone' label="Phone" type="tel" onChange={handleChange} required={true}/>
-              <InputField value={billingAddress?.region} name='region' label="Regione" type="text" onChange={handleChange} required={true}/>
-              <InputField value={billingAddress?.city} name='city' label="City" type="text" onChange={handleChange} required={true}/>
-              <InputField value={billingAddress?.area} name='area' label="Area" type="text" onChange={handleChange} required={true}/>
-              <InputField value={billingAddress?.address} name='address' label="Address" type="text" onChange={handleChange} required={true}/>
-              <div className='flex justify-end'>
-                <button type='submit' className='bg-[#D23E41] py-2 px-4 hover:shadow-md text-white mt-4 rounded-lg'>Next</button>
-              </div>
-            </form>
+  if(!userData){
+    return<div className='container mx-auto flex justify-center items-center p-32 bg-white'>Auth Checking...</div>
+  }else{
+    return (
+      <div className='container mx-auto mt-[58px] sm:mt-0 px-2 sm:px-0'>
+        <div>
+          <h4 className='text-center mt-8 text-2xl border-b pb-4 font-bold'>Checkout</h4>
+        </div>
+        <div className='mt-4 mb-12 flex justify-center'>
+          <div className='sm:w-3/5 bg-white rounded-md overflow-hidden shadow-sm'>
+            <div className='grid grid-cols-3 bg-gray-400 text-white mb-4'>
+              <div className={`col-span-1 border-b border-r text-center py-2 text-sm sm:text-lg ${currentState == BILLING_ADDRESS && 'bg-[#D23E41] text-center border-b p-2 text-white'}`}>BILLING ADDRESS</div>
+              <div className={`col-span-1 border-b border-r text-center py-2 text-sm sm:text-lg ${currentState == SHIPPING_ADDRESS && 'bg-[#D23E41] text-center border-b p-2 text-white'}`}>SHIPPING ADDRESS</div>
+              <div className={`col-span-1 border-b border-r text-center py-2 text-sm sm:text-lg ${currentState == PAYMENT_INFO && 'bg-[#D23E41] text-center border-b p-2 text-white'}`}>PAYMENT INFORMATION</div>
+            </div>
+            {
+              currentState === BILLING_ADDRESS
+              &&
+              <form className=' p-4' onSubmit={handleBillingAddressSubmit}>
+                <InputField value={billingAddress?.full_name} name='full_name' label="Full Name" type="text" onChange={handleChange} required={true}/>
+                <InputField value={billingAddress?.phone} name='phone' label="Phone" type="tel" onChange={handleChange} required={true}/>
+                <InputField value={billingAddress?.region} name='region' label="Regione" type="text" onChange={handleChange} required={true}/>
+                <InputField value={billingAddress?.city} name='city' label="City" type="text" onChange={handleChange} required={true}/>
+                <InputField value={billingAddress?.area} name='area' label="Area" type="text" onChange={handleChange} required={true}/>
+                <InputField value={billingAddress?.address} name='address' label="Address" type="text" onChange={handleChange} required={true}/>
+                <div className='flex justify-end'>
+                  <button type='submit' className='bg-[#D23E41] py-2 px-4 hover:shadow-md text-white mt-4 rounded-lg'>Next</button>
+                </div>
+              </form>
+
+            }
+            {
+              currentState === SHIPPING_ADDRESS
+              &&
+              <form className='p-4' onSubmit={handleShippingAddressSubmit}>
+                <InputField value={shippingAddress?.full_name} name='full_name' label="Full Name" type="text" onChange={handleChange} required={true}/>
+                <InputField value={shippingAddress?.phone} name='phone' label="Phone" type="tel" onChange={handleChange} required={true}/>
+                <InputField value={shippingAddress?.region} name='region' label="Regione" type="text" onChange={handleChange} required={true}/>
+                <InputField value={shippingAddress?.city} name='city' label="City" type="text" onChange={handleChange} required={true}/>
+                <InputField value={shippingAddress?.area} name='area' label="Area" type="text" onChange={handleChange} required={true}/>
+                <InputField value={shippingAddress?.address} name='address' label="Address" type="text" onChange={handleChange} required={true}/>
+                <div className='flex justify-end'>
+                  <button onClick={()=> {setCurrentState(BILLING_ADDRESS)}} className='bg-gray-400 py-2 px-4 hover:shadow-md text-white mt-4 rounded-lg'>Previous</button>
+                  <button type='submit' className='bg-[#D23E41] py-2 px-4 ml-4 hover:shadow-md text-white mt-4 rounded-lg'>Next</button>
+                </div>
+              </form>
+            }
+            {
+              currentState === PAYMENT_INFO
+              &&
+              <form className='p-4' onSubmit={handleOrderSubmit}>
+                <InputField value={totalAmount} name='amount' label="Amount" type="number" onChange={handleChange} required={true}/>
+                <SelectOption required={true} options={paymentMethods} label='Method' name='method' id='method' onClick={handleChange}/>
+              
+                <div className='flex justify-end'>
+                  <button onClick={()=> {setCurrentState(SHIPPING_ADDRESS)}} className='bg-gray-400 py-2 px-4 hover:shadow-md text-white mt-4 rounded-lg'>Previous</button>
+                  <button type='submit' className='bg-[#D23E41] py-2 px-4 ml-4 hover:shadow-md text-white mt-4 rounded-lg'>CONFIRM</button>
+                </div>
+              </form>
+            }
           </div>
-          }
-          {
-            currentState === SHIPPING_ADDRESS
-            &&
-            <div>
-            <h4 className='text-center border-b pb-2 text-xl'>
-              SHIPPING ADDRESS
-            </h4>
-            <form onSubmit={handleShippingAddressSubmit}>
-              <InputField value={shippingAddress?.full_name} name='full_name' label="Full Name" type="text" onChange={handleChange} required={true}/>
-              <InputField value={shippingAddress?.phone} name='phone' label="Phone" type="tel" onChange={handleChange} required={true}/>
-              <InputField value={shippingAddress?.region} name='region' label="Regione" type="text" onChange={handleChange} required={true}/>
-              <InputField value={shippingAddress?.city} name='city' label="City" type="text" onChange={handleChange} required={true}/>
-              <InputField value={shippingAddress?.area} name='area' label="Area" type="text" onChange={handleChange} required={true}/>
-              <InputField value={shippingAddress?.address} name='address' label="Address" type="text" onChange={handleChange} required={true}/>
-              <div className='flex justify-end'>
-                <button onClick={()=> {setCurrentState(BILLING_ADDRESS)}} className='bg-gray-400 py-2 px-4 hover:shadow-md text-white mt-4 rounded-lg'>Previous</button>
-                <button type='submit' className='bg-[#D23E41] py-2 px-4 ml-4 hover:shadow-md text-white mt-4 rounded-lg'>Next</button>
-              </div>
-            </form>
-          </div>
-          }
-          {
-            currentState === PAYMENT_INFO
-            &&
-            <div>
-            <h4 className='text-center border-b pb-2 text-xl'>
-              PAYMENT INFORMATION
-            </h4>
-            <form onSubmit={handleOrderSubmit}>
-              <InputField value={paymentInfo?.amount} name='amount' label="Amount" type="number" onChange={handleChange} required={true}/>
-              <SelectOption required={true} options={paymentMethods} label='Method' name='method' id='method' onClick={handleChange}/>
-             
-              <div className='flex justify-end'>
-                <button onClick={()=> {setCurrentState(SHIPPING_ADDRESS)}} className='bg-gray-400 py-2 px-4 hover:shadow-md text-white mt-4 rounded-lg'>Previous</button>
-                <button type='submit' className='bg-[#D23E41] py-2 px-4 ml-4 hover:shadow-md text-white mt-4 rounded-lg'>CONFIRM</button>
-              </div>
-            </form>
-          </div>
-          }
         </div>
       </div>
-    </div>
-  )
+    )
+  }
 }

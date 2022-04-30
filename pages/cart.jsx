@@ -3,76 +3,140 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Image from 'next/image'
 import Link from 'next/link'
-import { decQuantity, decreaseSingleQuantity, incQuantity, increaseSingleQuantity, removeItem } from '../redux/cart/cartActions'
+import { updateCartItemQuantity, removeItem } from '../redux/cart/cartActions'
+import SelectOption from '../components/common/SelectOption'
+import { useRouter } from 'next/router'
 
 export default function Cart() {
-  const userData = useSelector(state => state.user.data)
-  const cart = useSelector(state => state.cart.data)
-  const cartItems = useSelector(state => state.cart.data?.items)
   const dispatch = useDispatch()
+  const router = useRouter()
 
+  const userData = useSelector(state => state.user?.data)
+  const cart = useSelector(state => state.cart?.data)
+  const cartItems = useSelector(state => state.cart?.data?.items)
 
+  const [totalAmount, setTotalAmount] = useState(0)
 
-  const handleRemoveFromCart = async(product) => {
-    const response = await deleteFromCart(product)
-    console.log(response.data)
-  }
+  useEffect(() => {
+    if(!userData){
+      router.push('/auth/sign-in')
+    }
+  }, [])
 
+  useEffect(() => {
+    let temp_price = 0;
+    cart?.items?.map(item => {
+      temp_price += (item?.special_price * item?.quantity)
+    })
+    setTotalAmount(temp_price)
+  }, [cart])
 
-  return (
-    <div className='container mx-auto p-4'>
-      <div className='bg-white p-4'>
-        <div className='border-b-4 pb-4'>
-          <p className='text-center text-2xl'>Your Cart</p>
-        </div>
-        {
-          cartItems?.map((product, index) => (
-            <div key={index} className='border-b py-4'>
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center'>
-                  <div className='h-16 w-16 mr-4'>
-                  <Image alt="image"  
-                    src={product.image}
-                    // src="https://res.cloudinary.com/ismail61/image/upload/v1650217191/balushai/product/2d6132a2-4caa-48c2-88f2-20acaaecbac0-e27-200w-5g-bulb-surveillance-camera-night-vision-full-color-automatic-human-tracking-zoom-indoor-security.jpg_q90.jpg__yjl8zz.webp"
-                    width="100%" 
-                    height="100%" 
-                    layout="responsive" 
-                    objectFit="cover"
-                  />
-                  </div>
-                  <h4><Link href={`/product/${product.product_id.slug}`}>{product?.product_id?.product_name}</Link></h4>
-                </div>
-               <div className='flex'>
-                <div className='mr-16'>
-                    <i onClick={() => decQuantity(cart, product, dispatch)} className="fa-light fa-circle-minus text-2xl hover:cursor-pointer"></i>
-                      <span className='text-2xl mx-2'>{product.quantity}</span>
-                    <i onClick={() => incQuantity(cart, product, dispatch)} className="fa-light fa-circle-plus text-2xl hover:cursor-pointer"></i>
-                </div>
-                <span onClick={()=> removeItem(cart, product, dispatch)} className='bg-red-100 text-red-600 px-3 py-2 rounded shadow-sm hover:cursor-pointer'>Remove</span>
-               </div>
+  const quantityOptions = [
+    {key: 1, value: 1},
+    {key: 2, value: 2},
+    {key: 3, value: 3},
+    {key: 4, value: 4},
+    {key: 5, value: 5}
+  ]
+
+  if(userData){
+      return (
+        <div className='container mx-auto p-2 sm:p-4 mb-8 mt-[52px] sm:mt-0'>
+          <div className='border-b mb-4 sm:mt-4 pb-4'>
+            <p className='text-center text-xl sm:text-2xl font-bold'><i className="fa-regular fa-bag-shopping"></i> My Cart</p>
+          </div>
+          {
+            !cart&&<div className='bg-white text-center p-16 rounded'>Empty Cart</div>
+          }
+          {cart&&<div className='grid grid-cols-10 gap-8'>
+            {/* Cart Details */}
+            <div className='col-span-10 xl:col-span-6'>
+              <div className='bg-white p-4 rounded'>
+                {
+                  cartItems?.map((product, index) => (
+                    <div key={index} className='py-4'>
+                      <div className='grid grid-cols-10 gap-3'>
+                        <div className='flex col-span-10 sm:col-span-4'>
+                          <div className='h-16 w-24 mr-4'>
+                          <Image alt="image"  
+                            src={product.image}
+                            // src="https://res.cloudinary.com/ismail61/image/upload/v1650217191/balushai/product/2d6132a2-4caa-48c2-88f2-20acaaecbac0-e27-200w-5g-bulb-surveillance-camera-night-vision-full-color-automatic-human-tracking-zoom-indoor-security.jpg_q90.jpg__yjl8zz.webp"
+                            width="84" 
+                            height="84" 
+                            layout="responsive" 
+                            objectFit="contain"
+                          />
+                          </div>
+                          <div>
+                            <h4 className='font-medium text-sm text-gray-600'><Link href={`/product/${product.product_id?.slug}`}>{product?.product_id?.product_name}</Link></h4>
+                            <div className='flex sm:flex-col text-sm mt-2 text-gray-400'>
+                              <div>Color: {product?.color_family}</div>
+                              <div className='mx-8 sm:mx-0'>Size: {product?.size}</div>
+                              <span onClick={()=> removeItem(cart, product, dispatch)} className='text-[#d23e41] sm:mt-2 hover:cursor-pointer'>Delete</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className='col-span-3 sm:col-span-2'>
+                          <div className='text-gray-500 text-sm font-medium text-center'>Each</div>
+                          <div className='text-center mt-2 font-semibold text-sm'>৳ {parseInt(product?.special_price)?.toLocaleString()}</div>
+                        </div>
+                        <div className='col-span-4 sm:col-span-3 flex flex-col'>
+                          <div className='text-gray-500 text-sm font-medium sm:mb-2 text-center sm:text-left'>Quantity</div>
+                          <SelectOption className="" onChange={(e) => updateCartItemQuantity(cart, product, e.target.value, dispatch)} options={quantityOptions} selected={product.quantity}/>
+                        </div>
+                        <div className='col-span-3 sm:col-span-1 flex flex-col items-center'>                    
+                          <div className='text-gray-500 text-sm font-medium '>Total</div>
+                          <div className='text-md font-semibold mt-2 text-gray-600'>৳ {parseInt(parseInt(product?.quantity) * parseInt(product?.special_price))?.toLocaleString()}</div>
+                          
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                }
+                {
+                  cartItems?.length == 0 
+                  && <div className='my-24 flex justify-center items-center'>Empty Cart</div>
+                }
+              <div className='border-t pt-2 flex justify-between font-semibold'>
+                <div>{cart?.items?.length} items</div>
+                <div className='text-xl'>৳  {parseInt(totalAmount)?.toLocaleString()}</div>
+              </div>
               </div>
             </div>
-          ))
-        }
-        {
-          cartItems?.length == 0 
-          && <div className='my-32 flex justify-center items-center'>Empty Cart</div>
-        }
-        { cartItems?.length != 0
-          && <Link passHref href={`${userData?'/checkout':'auth/sign-in'}`}><div className='bg-[#D23E41] text-white w-full py-4 font-semibold hover:shadow-lg text-center hover:cursor-pointer transition-all duration-150'>CheckOut</div></Link>
-        }
-      </div>
-    </div>
-  )
-}
+            {/* Checkout Details */}
+            <div className='col-span-10 xl:col-span-4  bg-white rounded p-4'>
+              <p className='text-gray-500 mb-1'>ENTER PROMO CODE</p>
+              <div className='flex'>
+                <input className='border p-2 flex-grow' type="text"/>
+                <button className='bg-[#D23E41] text-white p-2 sm:px-16'>SUBMIT</button>
+              </div>
+              <div className='mt-8 text-gray-400'>
+                <div className='flex justify-between mt-4'>
+                  <span>Shipping cost</span>
+                  <span>৳ 0</span>
+                </div>
+                <div className='flex justify-between mt-4'>
+                  <span>Discount</span>
+                  <span>৳ 0</span>
+                </div>
+                <div className='flex justify-between mt-4'>
+                  <span>Tax</span>
+                  <span>৳ 0</span>
+                </div>
+                <div className='flex justify-between mt-4 text-gray-700 font-semibold'>
+                  <span>Estemeted Total</span>
+                  <span>৳ {totalAmount?.toLocaleString()}</span>
+                </div>
+              </div>
+            {cartItems?.length !== 0 && <Link passHref href='/checkout'><div className='bg-[#D23E41] mt-8 text-white py-2 hover:shadow-lg text-center hover:cursor-pointer transition-all duration-150 rounded'><i className="fa-solid fa-lock"></i> CheckOut</div></Link>}
+              
+            </div>
+          </div>}
+        </div>
+      )
+    }else{
+      return<div className='flex justify-center items-center p-32 bg-white'>Auth Checking...</div>
+    }
+  }
 
-// export async function getStaticProps(){
-//   const response = await getCartProducts()
-//   console.log("Cart Products", response?.data)
-
-//   return {
-//     props: {
-//       cartProducts: response.data
-//     }
-//   }
-// }
+  

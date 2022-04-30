@@ -11,12 +11,27 @@ import { getCustomerCart } from '../../adapters/cart'
 import { updateCart } from '../../redux/cart/cartActions'
 
 export default function Header() {
+  const router = useRouter()
 
+  // useEffect(()=> {
+  //   const fetcher = async() => {
+  //     try {
+  //       const userReponse = await getUserData()
+  //       const cartResponse = await getCustomerCart()
+  //       dispatch(setUserData(userReponse.data))
+  //       dispatch(updateCart(cartResponse.data))
+  //     } catch (error) {
+  //       if(router.pathname !== '/auth/sign-up' && router.pathname !== '/auth/sign-in'){
+  //         router.push('/auth/sign-in')
+  //       }
+  //     }
+  // }
+  //   fetcher()
+  // }, [])
   const userData = useSelector(state => state.user?.data)
   const cartItems = useSelector(state => state.cart?.data?.items)
   console.log("cart items: ", cartItems)
   const dispatch = useDispatch()
-  const router = useRouter()
 
   const handleLogout = () => {
     localStorage.clear()
@@ -35,7 +50,7 @@ export default function Header() {
   const account = {
     title: <><i className="fa-light fa-circle-user"></i><span className='mx-2'>Account</span></>,
     options: [
-      {title: <><Link href='#'><div className='py-2 transition-all duration-200 hover:underline group-hover:text-red-400'>My Orders</div></Link></>},
+      {title: <><Link href='/order'><div className='py-2 transition-all duration-200 hover:underline group-hover:text-red-400'>My Orders</div></Link></>},
       {title: <><Link href='/chat/message-center'><div className='py-2 transition-all duration-200 hover:underline'>Message Center</div></Link></>},
       {title: <><Link href='#'><div className='py-2 transition-all duration-200 hover:underline'>Wish List</div></Link></>},
       {title: <><Link href='#'><div className='py-2 transition-all duration-200 hover:underline'>My Favorite Stores</div></Link></>},
@@ -54,7 +69,7 @@ export default function Header() {
   return (
     <div className='shadow w-full'>
       {/* <TopHeader/> */}
-      <div className='bg-[#fafafa]'>
+      <div className='bg-[#fafafa] hidden sm:block'>
       <div className='sm:none md:flex h-[42px] container mx-auto'>
         <ul className='flex ml-auto hover:cursor-pointer'>
           <li className='px-4 my-auto border-r-2'><Dropdown data={help}/></li>
@@ -79,7 +94,7 @@ export default function Header() {
       </div>
       </div>
       {/* Main Header */}
-      <div className='bg-white h-[96px] w-full'>
+      <div className='bg-white shadow-sm sm:shadow-none fixed top-0 z-50 sm:z-40 sm:relative sm:h-[96px] w-full'>
         <div className='container mx-auto'>
           <div className='grid grid-cols-5 gap-4'>
             <div className='h-100 flex justify-center items-center cursor-pointer'>
@@ -94,11 +109,11 @@ export default function Header() {
             </div>
 
             {/* Search section */}
-            <div className='col-span-3 my-auto'>
+            <div className='col-span-4 sm:col-span-3 mr-2 sm:mr-0 my-auto'>
               <div className='flex border-2 border-[#D23E41] box-border h-[38px]'>
                 <div className='flex w-full'>
                   <input className='w-full px-4 outline-none' type='text' placeholder='summer clothes for women'/>
-                  <select className='w-[200px] px-4 mr-2 border-l-2 outline-none'>
+                  <select className='hidden sm:block w-[200px] px-4 mr-2 border-l-2 outline-none'>
                     <option>All Category</option>
                     <option>Man</option>
                     <option>Women</option>
@@ -111,7 +126,7 @@ export default function Header() {
             </div>
 
             {/* Cart section */}
-            <div className=' flex justify-start items-center'>
+            <div className='justify-start items-center hidden sm:flex'>
               <Link href='/cart'>
               <div className='relative hover:cursor-pointer'>
                 <i className="fa-light fa-cart-shopping text-2xl"></i>
