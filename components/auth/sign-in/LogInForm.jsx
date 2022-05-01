@@ -34,7 +34,7 @@ export default function LogInForm() {
       console.log("data: ", response?.data)
       dispatch(setUserData(response?.data?.userData))
       dispatch(updateCart(response?.data?.userCart))
-      router.push('/')
+      window.location.href='/'
     })
     if(!error){
       setIsLoading(false)
